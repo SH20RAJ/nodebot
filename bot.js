@@ -8,9 +8,12 @@ const bot = new Telegraf(process.env.TELEGRAM_BOT_TOKEN);
 // Create an Express application
 const app = express();
 
-// Set up a route for receiving updates from Telegram
+// Middleware to parse JSON bodies
 app.use(express.json());
+
+// Route to handle incoming updates from Telegram
 app.post(`/bot${process.env.TELEGRAM_BOT_TOKEN}`, (req, res) => {
+    // Forward the update to the Telegraf bot
     bot.handleUpdate(req.body, res);
 });
 
@@ -19,12 +22,6 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Express server is running on port ${PORT}`);
 });
-
-// Set up the webhook for the Telegram bot
-const webhookUrl = process.env.WEBHOOK_URL || `https://your-webhook-url:${PORT}/bot${process.env.TELEGRAM_BOT_TOKEN}`;
-bot.telegram.setWebhook(webhookUrl);
-
-console.log(`Webhook URL set to: ${webhookUrl}`);
 
 // Respond to text messages
 bot.on('text', (ctx) => {
