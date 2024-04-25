@@ -25,3 +25,16 @@ const webhookUrl = process.env.WEBHOOK_URL || `https://your-webhook-url:${PORT}/
 bot.telegram.setWebhook(webhookUrl);
 
 console.log(`Webhook URL set to: ${webhookUrl}`);
+
+// Respond to text messages
+bot.on('text', (ctx) => {
+    // Reply to the received text message
+    ctx.reply(`You said: ${ctx.message.text}`);
+});
+
+// Start the bot
+bot.launch().then(() => {
+    console.log('Bot is running');
+}).catch((err) => {
+    console.error('Error starting bot', err);
+});
