@@ -24,10 +24,33 @@ app.listen(PORT, () => {
 });
 
 // Respond to text messages
+// Respond to text messages
 bot.on('text', (ctx) => {
-    // Reply to the received text message
-    ctx.reply(`You said: ${ctx.message.text}`);
+    const messageText = ctx.message.text;
+    
+    // Check if the message contains a link
+    if (containsLink(messageText)) {
+        // Modify the link and send it back
+        const modifiedLink = modifyLink(messageText);
+        ctx.reply(`Modified link: ${modifiedLink}`);
+    } else {
+        // If the message doesn't contain a link, just echo the message
+        ctx.reply(`You said: ${messageText}`);
+    }
 });
+
+// Function to check if the message contains a link
+function containsLink(text) {
+    // Regular expression to match a URL pattern
+    const urlRegex = /(https?:\/\/[^\s]+)/;
+    return urlRegex.test(text);
+}
+
+// Function to modify the link
+function modifyLink(text) {
+    // Replace the domain with the new domain
+    return text.replace('https://teraboxapp.com/', 'https://forn.fun/watch/');
+}
 
 // Start the bot
 bot.launch().then(() => {
