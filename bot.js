@@ -1,4 +1,4 @@
-const { Telegraf } = require('telegraf');
+const { Telegraf, webhookCallback } = require('telegraf');
 const express = require('express');
 require('dotenv').config(); // Load environment variables from .env file
 
@@ -12,10 +12,7 @@ const app = express();
 app.use(express.json());
 
 // Route to handle incoming updates from Telegram
-app.post(`/bot${process.env.TELEGRAM_BOT_TOKEN}`, (req, res) => {
-    // Forward the update to the Telegraf bot
-    bot.handleUpdate(req.body, res);
-});
+app.post(`/bot${process.env.TELEGRAM_BOT_TOKEN}`, webhookCallback(bot));
 
 // Start the Express server
 const PORT = process.env.PORT || 3000;
@@ -23,7 +20,6 @@ app.listen(PORT, () => {
     console.log(`Express server is running on port ${PORT}`);
 });
 
-// Respond to text messages
 // Respond to text messages
 bot.on('text', (ctx) => {
     const messageText = ctx.message.text;
