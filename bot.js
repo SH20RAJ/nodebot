@@ -1,24 +1,27 @@
 const { Telegraf } = require('telegraf');
+const express = require('express');
+require('dotenv').config(); // Load environment variables from .env file
 
 // Create a new instance of Telegraf
-// const bot = new Telegraf(process.env.TELEGRAM_BOT_TOKEN);
-const bot = new Telegraf("6668998731:AAEQlZFKeNeQTsfnXE97H-nkzoTayMPYbmg");
+const bot = new Telegraf(process.env.TELEGRAM_BOT_TOKEN);
 
-// Start command
-bot.start((ctx) => ctx.reply('Welcome to your Telegram bot!'));
+// Create an Express application
+const app = express();
 
-// Help command
-bot.help((ctx) => ctx.reply('This is a simple Telegram bot. You can interact with it by sending commands.'));
-
-// Echo command
-bot.on('text', (ctx) => {
-    // Echo the received message
-    ctx.reply(ctx.message.text);
+// Set up a route for receiving updates from Telegram
+app.use(express.json());
+app.post(`/bot${process.env.TELEGRAM_BOT_TOKEN}`, (req, res) => {
+    bot.handleUpdate(req.body, res);
 });
 
-// Start polling
-bot.launch().then(() => {
-    console.log('Bot is running');
-}).catch((err) => {
-    console.error('Error starting bot', err);
+// Start the Express server
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`Express server is running on port ${PORT}`);
 });
+
+// Set up the webhook for the Telegram bot
+const webhookUrl = process.env.WEBHOOK_URL || `https://your-webhook-url:${PORT}/bot${process.env.TELEGRAM_BOT_TOKEN}`;
+bot.telegram.setWebhook(webhookUrl);
+
+console.log(`Webhook URL set to: ${webhookUrl}`);
