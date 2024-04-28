@@ -1,56 +1,21 @@
-const { Telegraf, webhookCallback } = require('telegraf');
-const express = require('express');
-require('dotenv').config(); // Load environment variables from .env file
 
 // Create a new instance of Telegraf
-const bot = new Telegraf(process.env.TELEGRAM_BOT_TOKEN);
+const TelegramBot = require('node-telegram-bot-api');
+require('dotenv').config(); // Load environment variables from .env file
 
-// Create an Express application
-const app = express();
+// Replace 'YOUR_TELEGRAM_BOT_TOKEN' with your actual bot token obtained from BotFather
+const token = process.env.TELEGRAM_BOT_TOKEN;
 
-// Middleware to parse JSON bodies
-app.use(express.json());
+// Create a bot instance
+const bot = new TelegramBot(token, { polling: true });
 
-// Route to handle incoming updates from Telegram
-app.post(`/bot${process.env.TELEGRAM_BOT_TOKEN}`, webhookCallback(bot));
+// Listen for messages
+bot.on('message', (msg) => {
+  const chatId = msg.chat.id;
+  const messageText = msg.text.toString().toLowerCase();
 
-// Start the Express server
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    console.log(`Express server is running on port ${PORT}`);
-});
-
-// Respond to text messages
-bot.on('text', (ctx) => {
-    const messageText = ctx.message.text;
-    
-    // Check if the message contains a link
-    if (containsLink(messageText)) {
-        // Modify the link and send it back
-        const modifiedLink = modifyLink(messageText);
-        ctx.reply(`Modified link: ${modifiedLink}`);
-    } else {
-        // If the message doesn't contain a link, just echo the message
-        ctx.reply(`You said: ${messageText}`);
-    }
-});
-
-// Function to check if the message contains a link
-function containsLink(text) {
-    // Regular expression to match a URL pattern
-    const urlRegex = /(https?:\/\/[^\s]+)/;
-    return urlRegex.test(text);
-}
-
-// Function to modify the link
-function modifyLink(text) {
-    // Replace the domain with the new domain
-    return text.replace('https://teraboxapp.com/', 'https://forn.fun/watch/');
-}
-
-// Start the bot
-bot.launch().then(() => {
-    console.log('Bot is running');
-}).catch((err) => {
-    console.error('Error starting bot', err);
+  if (messageText === 'hi') {
+    // Send "Hi" as a response
+    bot.sendMessage(chatId, 'Hi');
+  }
 });
