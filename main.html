@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="no">1</div>
+    <button onclick="cli()">Add +1</button>
+    <script>
+        let content = document.getElementById("no");
+        function cli(){
+            content.innerHTML = parseInt(content.innerHTML) + 1;
+        }
+    </script>
+</body>
+</html>
