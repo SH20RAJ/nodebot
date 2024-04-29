@@ -74,6 +74,9 @@ app.post('/bot', (req, res) => {
     } else if (textContent === 'hi') {
         // Send "Hi" as a response
         bot.sendMessage(chatId, 'Hi');
+    } else if (textContent === '/start') {
+        // Send "Hi" as a response
+        bot.sendMessage(chatId, 'Send/Forward me a Terabox Link and I will give you the download link.... 🚀');
     }
 
     res.sendStatus(200);
