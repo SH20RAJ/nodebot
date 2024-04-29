@@ -12,7 +12,7 @@ const bot = new TelegramBot(token, { polling: true });
 bot.on('message', async (msg) => {
   const chatId = msg.chat.id;
   const messageText = msg.text.toString().toLowerCase();
-  bot.sendMessage(chatId, messageText)
+  // bot.sendMessage(chatId, messageText)
 
   // Check if the message contains a link
   if (messageText.includes('https://')) {
@@ -22,10 +22,19 @@ bot.on('message', async (msg) => {
     // Check if the URL is from teraboxapp.com
     if (url.includes('teraboxapp.com')) {
       try {
-        bot.sendMessage(chatId, "Wait........");
+        // bot.sendMessage(chatId, "Wait........");
+        await bot.sendChatAction(chatId, 'typing');
+
+        const apiUrl = "https://ytshorts.savetube.me/api/v1/terabox-downloader";
+const requestBody = {
+    url: "https://teraboxapp.com/s/1g03a7bZ6wXMYHoEXQDd6sQ" // Example URL, replace with your dynamic URL
+};
+
+
         // Fetch data from terabox downloader API using Axios
-        const response = await fetch("https://ytshorts.savetube.me/api/v1/terabox-downloader", {
-            "headers": {
+        const response = await fetch(apiUrl, {
+          method: "POST",
+          headers: {
               "accept": "application/json, text/plain, */*",
               "accept-language": "en-US,en;q=0.9,hi;q=0.8",
               "cache-control": "no-cache",
@@ -39,11 +48,10 @@ bot.on('message', async (msg) => {
               "sec-fetch-mode": "cors",
               "sec-fetch-site": "same-origin",
               "cookie": "_ga=GA1.1.2110759286.1711701275; FCNEC=%5B%5B%22AKsRol9AEBYqsxFEeKI7ZfmIA6z6Kdr8jEVx3wLHKuXQjRTyy-TGf-Uq8vNhpew0dbd4KB04eejgrTAQEbdvA0CSC8nEvs-ZYssal2zC841o5adBmM9WkRQ2SVR0Tt2TqFw5gfxD3z0WN0eGYE4U-g62A_4yKalr3g%3D%3D%22%5D%5D; _ga_3Q4D9SLPKL=GS1.1.1714320325.5.1.1714320325.0.0.0; cf_clearance=Wm.0hFtXbDxA_owC3lvaD35Cp5RSvg_6kDaAotsJsag-1714320326-1.0.1.1-vOSYCYtc1sQb7f.CHmdymgp1L64WP4cVq0Ypmke.IA8MwmNAs0iKlrMbs7jxc2oXji94fIZKYTJZPThjo9llEA"
-            },
-            "referrerPolicy": "no-referrer",
-            "body": "{\"url\":\"https://teraboxapp.com/s/1g03a7bZ6wXMYHoEXQDd6sQ\"}",
-            "method": "POST"
-          });
+          },
+          body: JSON.stringify(requestBody),
+          referrerPolicy: "no-referrer"
+      });
           let data = await response.json();
           console.log(data);
           // bot.sendMessage(chatId, data.response[0].resolutions);
@@ -58,9 +66,9 @@ bot.on('message', async (msg) => {
           `;
 
           let downloadlink = `https://teradl.shraj.workers.dev/?url=${encodeURIComponent(videoInfo.resolutions["Fast Download"])}`;
-          let base =  {"vidurl":downloadlink,"vidtitle":videoInfo.title,"viddesc":"","vidposter":videoInfo.thumbnail};
-          base = JSON.stringify(btoa(base));
-          let watchlink = "https://sh20raj.github.io/Sopplayer/rainplayer/?play="+base+"";
+          let base =  {"id":downloadlink,"vidtitle":videoInfo.title,"viddesc":"","posterurl":videoInfo.thumbnail};
+          base = btoa(JSON.stringify(base));
+          let watchlink = "https://sh20raj.github.io/VideoPlyr/plyr.html?id="+base+"";
 
           const options = {
             parse_mode: "HTML",
