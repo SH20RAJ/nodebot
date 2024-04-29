@@ -1,7 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const TelegramBot = require('node-telegram-bot-api');
-const fetch = require('node-fetch');
 require('dotenv').config();
 
 const token = process.env.TELEGRAM_BOT_TOKEN;
