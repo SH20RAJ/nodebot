@@ -50,16 +50,26 @@ bot.on('message', async (msg) => {
           // bot.sendMessage(chatId, data.response[0].thumbnail);
           // bot.sendMessage(chatId, data.response[0].title);
 
-          let msgtemplate = `
-          <b>Title:</b> ${data.response[0].title}
-          <b>Thumbnail:</b> ${data.response[0].thumbnail}
+          const videoInfo = data.response[0];
 
-          <b>Download:</b> ${data.response[0].resolutions["Fast Download"]}
-          
+          const msgTemplate = `
+<b>Title:</b> ${videoInfo.title}
+<b>Thumbnail:</b> <a href="${videoInfo.thumbnail}">View Thumbnail</a>
           `;
-          bot.sendMessage(chatId, msgtemplate, {
-            parse_mode: "HTML"
-          });
+
+          const options = {
+            parse_mode: "HTML",
+            reply_markup: {
+              inline_keyboard: [
+                [
+                  { text: "Fast Download", url: videoInfo.resolutions["Fast Download"] },
+                  { text: "Watch", url: `https://teradl.shraj.workers.dev/?url=${encodeURIComponent(videoInfo.resolutions["Fast Download"])}` }
+                ]
+              ]
+            }
+          };
+
+          bot.sendMessage(chatId, msgTemplate, options);
 
         
         // Check if response is successful
