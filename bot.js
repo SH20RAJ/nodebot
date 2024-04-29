@@ -10,9 +10,18 @@ const app = express();
 app.use(bodyParser.json());
 
 // Webhook endpoint for Telegram
-app.post(`/bot`, (req, res) => {
+app.post('/bot', (req, res) => {
+    console.log('Received message:', req.body.message);
+
+    // Check if there is a message and text field
+    if (!req.body.message || !req.body.message.text) {
+        console.log('No text message received');
+        return res.sendStatus(200);  // Acknowledge the request anyways
+    }
+
     const chatId = req.body.message.chat.id;
     const messageText = req.body.message.text;
+    console.log(chatId,messageText);
 
     // Check if the message contains a link
     if (messageText.includes('https://')) {
@@ -30,7 +39,6 @@ app.post(`/bot`, (req, res) => {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
-                        // Add other headers here if needed
                     },
                     body: JSON.stringify(requestBody)
                 })
@@ -83,6 +91,7 @@ app.post(`/bot`, (req, res) => {
     res.sendStatus(200);
 });
 
+
 // Function to extract URL from message
 function extractUrl(message) {
     const regex = /(https?:\/\/[^\s]+)/;
@@ -94,8 +103,8 @@ function extractUrl(message) {
 }
 
 // Set up the webhook with the provided URL
-const WEBHOOK_URL = 'https://nodebot-ilhh.onrender.com/bot';
-bot.setWebHook(WEBHOOK_URL);
+// const WEBHOOK_URL = 'https://nodebot-ilhh.onrender.com/bot';
+// bot.setWebHook(WEBHOOK_URL);
 
 // Start the Express server
 const PORT = process.env.PORT || 3000;
