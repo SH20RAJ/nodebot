@@ -32,6 +32,12 @@ app.post('/bot', (req, res) => {
         // Check if the URL is from teraboxapp.com
         if (url.includes('teraboxapp.com')) {
             try {
+                let id  = url.split('/').pop();
+                let data = fetch('https://teraboxdl-3xv9.onrender.com/api/upload?id='+id)
+            } catch (error) {
+                console.log(error);
+            }
+            try {
                 bot.sendChatAction(chatId, 'typing');
                 const apiUrl = "https://ytshorts.savetube.me/api/v1/terabox-downloader";
                 const requestBody = { url };
