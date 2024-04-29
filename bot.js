@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const TelegramBot = require('node-telegram-bot-api');
+const fetch = require('node-fetch');
 require('dotenv').config();
 
 const token = process.env.TELEGRAM_BOT_TOKEN;
@@ -13,65 +14,47 @@ app.use(bodyParser.json());
 app.post('/bot', (req, res) => {
     console.log('Received message:', req.body.message);
 
-    // Check if there is a message and text field
-    if (!req.body.message || !req.body.message.text) {
-        console.log('No text message received');
+    // Initialize message variables
+    const message = req.body.message;
+    let textContent = message.text || (message.caption ? message.caption : '');
+
+    if (!textContent) {
+        console.log('No text or caption in the message');
         return res.sendStatus(200);  // Acknowledge the request anyways
     }
 
-    const chatId = req.body.message.chat.id;
-    const messageText = req.body.message.text;
-    console.log(chatId,messageText);
+    const chatId = message.chat.id;
+    console.log(chatId, textContent);
 
     // Check if the message contains a link
-    if (messageText.includes('https://')) {
-        const url = extractUrl(messageText);
+    if (textContent.includes('https://')) {
+        const url = extractUrl(textContent);
 
         // Check if the URL is from teraboxapp.com
         if (url.includes('teraboxapp.com')) {
             try {
                 bot.sendChatAction(chatId, 'typing');
-
                 const apiUrl = "https://ytshorts.savetube.me/api/v1/terabox-downloader";
                 const requestBody = { url };
 
                 fetch(apiUrl, {
                     method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
+                    headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(requestBody)
                 })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Failed to fetch data');
-                    }
-                    return response.json();
-                })
+                .then(response => response.json())
                 .then(data => {
-                    if (!data || !data.response || data.response.length === 0) {
-                        throw new Error('No video data found');
-                    }
-
                     const videoInfo = data.response[0];
-
-                    const msgTemplate = `
-<b>Title:</b> ${videoInfo.title}
-<b>Thumbnail:</b> <a href="${videoInfo.thumbnail}">View Thumbnail</a>
-`;
-
+                    const msgTemplate = `<b>Title:</b> ${videoInfo.title}\n<b>Thumbnail:</b> <a href="${videoInfo.thumbnail}">View Thumbnail</a>`;
                     const options = {
                         parse_mode: "HTML",
                         reply_markup: {
-                            inline_keyboard: [
-                                [
-                                    { text: "Fast Download", url: videoInfo.resolutions["Fast Download"] },
-                                    { text: "Watch", url: `https://teradl.shraj.workers.dev/?url=${encodeURIComponent(videoInfo.resolutions["Fast Download"])}` }
-                                ]
-                            ]
+                            inline_keyboard: [[
+                                { text: "Fast Download", url: videoInfo.resolutions["Fast Download"] },
+                                { text: "Watch", url: `https://teradl.shraj.workers.dev/?url=${encodeURIComponent(videoInfo.resolutions["Fast Download"])}` }
+                            ]]
                         }
                     };
-
                     bot.sendMessage(chatId, msgTemplate, options);
                 })
                 .catch(error => {
@@ -83,7 +66,7 @@ app.post('/bot', (req, res) => {
                 bot.sendMessage(chatId, 'An error occurred while processing your request');
             }
         }
-    } else if (messageText === 'hi') {
+    } else if (textContent === 'hi') {
         // Send "Hi" as a response
         bot.sendMessage(chatId, 'Hi');
     }
@@ -91,22 +74,13 @@ app.post('/bot', (req, res) => {
     res.sendStatus(200);
 });
 
-
-// Function to extract URL from message
-function extractUrl(message) {
+// Function to extract URL from message or caption
+function extractUrl(text) {
     const regex = /(https?:\/\/[^\s]+)/;
-    const matches = message.match(regex);
-    if (matches && matches.length > 0) {
-        return matches[0];
-    }
-    return '';
+    const matches = text.match(regex);
+    return matches ? matches[0] : '';
 }
 
-// Set up the webhook with the provided URL
-// const WEBHOOK_URL = 'https://nodebot-ilhh.onrender.com/bot';
-// bot.setWebHook(WEBHOOK_URL);
-
-// Start the Express server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
