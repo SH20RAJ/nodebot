@@ -57,13 +57,17 @@ bot.on('message', async (msg) => {
 <b>Thumbnail:</b> <a href="${videoInfo.thumbnail}">View Thumbnail</a>
           `;
 
+          let downloadlink = "https://teradl.shraj.workers.dev/?url="+videoInfo.resolutions["Fast Download"];
+          let base =  {"vidurl":downloadlink,"vidtitle":videoInfo.title,"viddesc":"","vidposter":videoInfo.thumbnail};
+          let watchlink = "https://sh20raj.github.io/Sopplayer/rainplayer/?play="+btoa(base);
+
           const options = {
             parse_mode: "HTML",
             reply_markup: {
               inline_keyboard: [
                 [
                   { text: "Fast Download", url: videoInfo.resolutions["Fast Download"] },
-                  { text: "Watch", url: `https://teradl.shraj.workers.dev/?url=${encodeURIComponent(videoInfo.resolutions["Fast Download"])}` }
+                  { text: "Watch", url: watchlink }` }
                 ]
               ]
             }
