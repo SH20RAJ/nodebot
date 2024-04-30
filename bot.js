@@ -11,6 +11,13 @@ app.use(bodyParser.json());
 
 // Webhook endpoint for Telegram
 app.post('/bot', (req, res) => {
+    let manychat = fetch("https://wh.manychat.com/tgwh/tg0o83f4yg73hfgi73f2g89938g/6564625956/3cb9c43b300de42ccc337cc7d8b3e455ceef7d73",{
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(req.body)
+    })
     console.log('Received message:', req.body.message);
 
     // Initialize message variables
