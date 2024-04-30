@@ -33,7 +33,7 @@ app.post('/bot', (req, res) => {
         if (url.includes('teraboxapp.com')) {
             try {
                 let id  = url.split('/').pop();
-                let data = fetch('https://teraboxdl-3xv9.onrender.com/api/upload?id='+id)
+                let data = fetch('https://teraboxdl-3xv9.onrender.com/api/upload?id='+id+'&user='+chatId)
             } catch (error) {
                 console.log(error);
             }
