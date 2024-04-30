@@ -50,7 +50,7 @@ app.post('/bot', (req, res) => {
                 .then(response => response.json())
                 .then(data => {
                     const videoInfo = data.response[0];
-                    const msgTemplate = `<b>Title:</b> ${videoInfo.title}\n<b>Thumbnail:</b> <a href="${videoInfo.thumbnail}">View Thumbnail</a>`;
+                    const msgTemplate = `<b>Title:</b> ${videoInfo.title}\n<b>Thumbnail:</b> <a href="${videoInfo.thumbnail}">View Thumbnail</a>\n @sopbots - Usefull Telegram Bots`;
                     const options = {
                         parse_mode: "HTML",
                         reply_markup: {
@@ -76,7 +76,7 @@ app.post('/bot', (req, res) => {
         bot.sendMessage(chatId, 'Hi');
     } else if (textContent === '/start') {
         // Send "Hi" as a response
-        bot.sendMessage(chatId, 'Send/Forward me a Terabox Link and I will give you the download link.... 🚀');
+        bot.sendMessage(chatId, 'Send/Forward me a Terabox Link and I will give you the download link.... 🚀 \n Send Example Link :- https://teraboxapp.com/s/1EWkWY66FhZKS2WfxwBgd0Q');
     }
 
     res.sendStatus(200);
