@@ -37,10 +37,11 @@ app.post('/bot', (req, res) => {
         const url = extractUrl(textContent);
 
         // Check if the URL is from teraboxapp.com
-        if (url.includes('teraboxapp.com')) {
+        if (url.includes('terabox')) {
             try {
                 let id  = url.split('/').pop();
-                let data = fetch('https://teraboxdl-4er1.onrender.com/api/upload?id='+id+'&user='+chatId)
+                console.log("the id is " + id);
+                let data = fetch('https://teraboxdl-4er1.onrender.com/api/upload?id='+id+'&user='+chatId || null)
             } catch (error) {
                 console.log(error);
             }
