@@ -63,8 +63,8 @@ app.post('/bot', (req, res) => {
                         parse_mode: "HTML",
                         reply_markup: {
                             inline_keyboard: [[
-                                { text: "Fast Download", url: videoInfo.resolutions["Fast Download"].replace('d3.terabox.com','d8.freeterabox.com')},
-                                { text: "Watch", url: `https://teradl.shraj.workers.dev/?url=${encodeURIComponent(videoInfo.resolutions["Fast Download"]).replace('d3.terabox.com','d8.freeterabox.com')}` }
+                                { text: "Fast Download", url: videoInfo.resolutions["HD Video"].replace('d3.terabox.com','d8.freeterabox.com')},
+                                { text: "Watch", url: `https://teradl.shraj.workers.dev/?url=${encodeURIComponent(videoInfo.resolutions["HD Video"]).replace('d3.terabox.com','d8.freeterabox.com')}` }
                             ]]
                         }
                     };
